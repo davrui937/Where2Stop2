@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.david.where2stop">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -12,18 +12,28 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Where2Stop">
         <activity
-            android:name=".LoginActivity"
-            android:parentActivityName=".SelectOptionAuthActivity"
+            android:name=".activities.driver.MapDriverActivity"
             android:exported="true" />
         <activity
-            android:name=".RegisterActivity"
+            android:name=".activities.client.MapClientActivity"
             android:exported="true" />
         <activity
-            android:name=".SelectOptionAuthActivity"
+            android:name=".activities.driver.RegisteredDriverActivity"
+            android:exported="true" />
+        <activity
+            android:name=".activities.LoginActivity"
             android:exported="true"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".activities.SelectOptionAuthActivity" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.client.RegisterActivity"
+            android:exported="true"
+            android:parentActivityName=".activities.SelectOptionAuthActivity" />
+        <activity
+            android:name=".activities.SelectOptionAuthActivity"
+            android:exported="true"
+            android:parentActivityName=".activities.MainActivity" />
+        <activity
+            android:name=".activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

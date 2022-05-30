@@ -1,14 +1,20 @@
-package com.david.where2stop;
+package com.david.where2stop.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.david.where2stop.R;
+import com.david.where2stop.activities.client.RegisterActivity;
+import com.david.where2stop.activities.driver.RegisteredDriverActivity;
+
 public class SelectOptionAuthActivity extends AppCompatActivity {
+    SharedPreferences mPref;
 
     Toolbar mToolbar;
     Button mButtonGoToLogin;
@@ -26,7 +32,9 @@ public class SelectOptionAuthActivity extends AppCompatActivity {
         
         mButtonGoToLogin = findViewById(R.id.btnGoToLogin);
         mButtonGoToRegister = findViewById(R.id.btnGoToRegister);
-        
+        mPref = getApplicationContext().getSharedPreferences("typeUser", MODE_PRIVATE);
+
+
         mButtonGoToLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -49,7 +57,12 @@ public class SelectOptionAuthActivity extends AppCompatActivity {
     }
 
     private void goToRegister() {
-        Intent intent = new Intent(SelectOptionAuthActivity.this,RegisterActivity.class);
-        startActivity(intent);
-    }
+        String typeUser = mPref.getString("user","");
+        if(typeUser.equals("client")){
+        Intent intent = new Intent(SelectOptionAuthActivity.this, RegisterActivity.class);
+        startActivity(intent);}
+        else{
+            Intent intent = new Intent(SelectOptionAuthActivity.this, RegisteredDriverActivity.class);
+            startActivity(intent);}
+        }
 }
