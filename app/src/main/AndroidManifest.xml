@@ -14,6 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Where2Stop">
         <activity
+            android:name=".activities.driver.DetailRequestActivity"
+            android:parentActivityName=".activities.driver.MapDriverActivity"
+            android:exported="true" />
+        <activity
             android:name=".activities.driver.MapDriverActivity"
             android:exported="true" />
         <activity
@@ -21,8 +25,8 @@
             android:exported="true" />
         <activity
             android:name=".activities.driver.RegisteredDriverActivity"
-            android:parentActivityName=".activities.SelectOptionAuthActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:parentActivityName=".activities.SelectOptionAuthActivity" />
         <activity
             android:name=".activities.LoginActivity"
             android:exported="true"
@@ -40,12 +44,13 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/google_maps_key"/>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
     </application>
 
 </manifest>

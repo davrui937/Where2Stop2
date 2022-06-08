@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
@@ -26,6 +27,8 @@ import android.widget.Toast;
 
 import com.david.where2stop.activities.LoginActivity;
 import com.david.where2stop.activities.client.MapClientActivity;
+import com.david.where2stop.providers.GoogleApiProvider;
+import com.david.where2stop.utils.DecodePoints;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -37,9 +40,13 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.JointType;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.SquareCap;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.david.where2stop.R;
@@ -54,7 +61,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.List;
 import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -72,7 +87,13 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
     private Marker mMarker;
 
     private Button mButtonConnect;
+    private Button mButtonConfirm;
     private boolean mIsConnect = false;
+
+    private LatLng mClientLatLng;
+
+
+
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance("https://where2stop-625d0-default-rtdb.europe-west1.firebasedatabase.app");
     private DatabaseReference myRef = database.getReference();
@@ -129,6 +150,23 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
 
 
 
+
+        database.getReference().child("client").child("cliente@gmailcom").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                mClientLatLng = new LatLng(Double.parseDouble(Objects.requireNonNull(dataSnapshot.child("lat").getValue()).toString()),Double.parseDouble(Objects.requireNonNull(dataSnapshot.child("long").getValue()).toString()));
+            }
+        });
+
+        mButtonConfirm = findViewById(R.id.btnConfirm);
+        mButtonConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                requestGuide();
+            }
+        });
+
+
         mButtonConnect = findViewById(R.id.btnConnect);
         mButtonConnect.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,11 +182,29 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
 
     }
 
+    private void requestGuide() {
+        if (mCurrentLatLng != null && mClientLatLng != null){
+            Intent intent = new Intent(MapDriverActivity.this,DetailRequestActivity.class);
+            intent.putExtra("origin_lat", mCurrentLatLng.latitude);
+            intent.putExtra("origin_lng", mCurrentLatLng.longitude);
+            intent.putExtra("destination_lat", mClientLatLng.latitude);
+            intent.putExtra("destination_lng", mClientLatLng.longitude);
+            intent.putExtra("origin", mCurrentLatLng);
+            intent.putExtra("destination", mClientLatLng);
+            startActivity(intent);
+        }
+        else{
+            Toast.makeText(this, "Debe seleccionar el Cliente", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void updateLocation() {
         if (mAuthProvider.existSession() && mCurrentLatLng != null) {
             mGeofireProvider.saveLocation(mAuthProvider.getId(), mCurrentLatLng);
         }
     }
+
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -165,11 +221,11 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
         mLocationRequest.setSmallestDisplacement(5);
 
 
+
         database.getReference().child("client").child("cliente@gmailcom").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
-                LatLng ubicacion = new LatLng(Double.parseDouble(Objects.requireNonNull(dataSnapshot.child("lat").getValue()).toString()),Double.parseDouble(Objects.requireNonNull(dataSnapshot.child("long").getValue()).toString()));
-                mMap.addMarker(new MarkerOptions().position(ubicacion).title("Cliente").icon( BitmapDescriptorFactory.fromResource(R.drawable.icon_pin_user)));
+                mMap.addMarker(new MarkerOptions().position(mClientLatLng).title("Cliente").icon( BitmapDescriptorFactory.fromResource(R.drawable.icon_pin_user)));
             }
         });
 
