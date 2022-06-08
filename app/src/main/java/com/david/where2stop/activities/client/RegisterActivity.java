@@ -75,6 +75,7 @@ public class RegisterActivity extends AppCompatActivity {
         final String email = mTextInputEmail.getText().toString();
         final String password = mTextInputPassword.getText().toString();
 
+
         if (!name.isEmpty() && !email.isEmpty() && !password.isEmpty()) {
             if (password.length() >= 6) {
                 mDialog.show();

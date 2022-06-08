@@ -39,7 +39,10 @@ public class LoginActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
-    
+
+
+    public static String iduser="";
+
     AlertDialog mDialog;
     
     @Override
@@ -73,6 +76,7 @@ public class LoginActivity extends AppCompatActivity {
         String email = mTextEmail.getText().toString();
         String password = mTextPassword.getText().toString();
 
+        iduser = email.replace(".","");
         if(!email.isEmpty() && !password.isEmpty()){
             if(password.length() >= 6){
                 mDialog.show();
