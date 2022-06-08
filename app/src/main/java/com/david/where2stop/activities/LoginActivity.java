@@ -43,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public static String iduser="";
 
+
     AlertDialog mDialog;
     
     @Override
@@ -76,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
         String email = mTextEmail.getText().toString();
         String password = mTextPassword.getText().toString();
 
-        iduser = email.replace(".","");
+
         if(!email.isEmpty() && !password.isEmpty()){
             if(password.length() >= 6){
                 mDialog.show();
@@ -86,6 +87,7 @@ public class LoginActivity extends AppCompatActivity {
                         if(task.isSuccessful()){
                             String user = mPref.getString("user","");
                             if(user.equals("client")){
+                                iduser = email.replace(".","");
                                 Intent intent = new Intent(LoginActivity.this, MapClientActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);

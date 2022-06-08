@@ -21,6 +21,7 @@
             android:exported="true" />
         <activity
             android:name=".activities.driver.RegisteredDriverActivity"
+            android:parentActivityName=".activities.SelectOptionAuthActivity"
             android:exported="true" />
         <activity
             android:name=".activities.LoginActivity"

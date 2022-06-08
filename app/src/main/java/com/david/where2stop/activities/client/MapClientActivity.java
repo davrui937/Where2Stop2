@@ -91,7 +91,7 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
                         mMarker.remove();
                     }
                     mCurrentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    myRef.child("client").child(LoginActivity.iduser).child("lat").setValue(location.getLatitude());
+                    myRef.child("client").child(LoginActivity.iduser).child("lat").setValue((location.getLatitude()));
                     myRef.child("client").child(LoginActivity.iduser).child("long").setValue(location.getLongitude());
 
                     mMarker = mMap.addMarker(new MarkerOptions().position(

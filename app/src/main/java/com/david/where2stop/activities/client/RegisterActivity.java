@@ -43,6 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
 
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +75,7 @@ public class RegisterActivity extends AppCompatActivity {
         final String name = mTextInputName.getText().toString();
         final String email = mTextInputEmail.getText().toString();
         final String password = mTextInputPassword.getText().toString();
+
 
 
         if (!name.isEmpty() && !email.isEmpty() && !password.isEmpty()) {

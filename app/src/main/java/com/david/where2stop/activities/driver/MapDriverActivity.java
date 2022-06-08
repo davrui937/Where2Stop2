@@ -47,11 +47,14 @@ import com.david.where2stop.activities.MainActivity;
 import com.david.where2stop.includes.MyToolbar;
 import com.david.where2stop.providers.AuthProvider;
 import com.david.where2stop.providers.GeofireProvider;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Objects;
 
 public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -83,6 +86,7 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
                 if (getApplicationContext() != null) {
 
                     mCurrentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+
 
                     if (mMarker != null) {
                         mMarker.remove();
@@ -161,47 +165,14 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
         mLocationRequest.setSmallestDisplacement(5);
 
 
-        /*mDatabase.child("client").child("cliente@gmailcom").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()){
-                    String lat = snapshot.child("lat").getValue().toString();
-                    String lon = snapshot.child("long").getValue().toString();
-                    int longFinal = Integer.parseInt(lon);
-                    int latFinal = Integer.parseInt(lat);
-                    System.out.println(longFinal+"AAAAAAAAAAAAA");
-                    System.out.println(latFinal+"BBBBBBBBBBBB");
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });*/
-
-
-        /*myRef.child("client").child("cliente@gmailcom").child("lat").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+        database.getReference().child("client").child("cliente@gmailcom").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
-                latClient[0] = (String) dataSnapshot.child("lat").getValue();
+                LatLng ubicacion = new LatLng(Double.parseDouble(Objects.requireNonNull(dataSnapshot.child("lat").getValue()).toString()),Double.parseDouble(Objects.requireNonNull(dataSnapshot.child("long").getValue()).toString()));
+                mMap.addMarker(new MarkerOptions().position(ubicacion).title("Cliente").icon( BitmapDescriptorFactory.fromResource(R.drawable.icon_pin_user)));
             }
         });
 
-        myRef.child("client").child("cliente@gmailcom").child("long").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-            @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                longClient[0] = (String) dataSnapshot.child("long").getValue();
-                System.out.println(longClient[0]+"XXXXXXXXXXXXXXXXXX");
-
-            }
-        });
-        /*int longFinal = Integer.parseInt(longClient[0]);
-        int latFinal = Integer.parseInt(latClient[0]);*/
-
-      //  LatLng clientMarker = new LatLng(longFinal,latFinal);
-        //mMap.addMarker(new MarkerOptions().position(clientMarker).title("Cliente").icon( BitmapDescriptorFactory.fromResource(R.drawable.icon_pin_user)));
 
     }
 
