@@ -40,6 +40,12 @@
             android:layout_gravity="center"
             android:hint="Inserta numero de pedido"/>
 
+        <Button
+            android:id="@+id/btnComprobar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_button"
+            android:text="Comprobar"/>
         </LinearLayout>
 
 

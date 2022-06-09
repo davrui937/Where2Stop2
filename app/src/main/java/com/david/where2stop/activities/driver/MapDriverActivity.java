@@ -92,7 +92,6 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance("https://where2stop-625d0-default-rtdb.europe-west1.firebasedatabase.app");
     private DatabaseReference myRef = database.getReference();
-    private DatabaseReference mDatabase;
     private LatLng mCurrentLatLng;
 
     LocationCallback mLocationCallback = new LocationCallback() {
@@ -152,8 +151,6 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
                 mClientLatLng = new LatLng(Double.parseDouble(Objects.requireNonNull(dataSnapshot.child("lat").getValue()).toString()),Double.parseDouble(Objects.requireNonNull(dataSnapshot.child("long").getValue()).toString()));
             }
         });
-
-
 
 
         mButtonConfirm = findViewById(R.id.btnConfirm);

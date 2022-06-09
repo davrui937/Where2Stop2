@@ -70,6 +70,7 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
     private FirebaseDatabase database = FirebaseDatabase.getInstance("https://where2stop-625d0-default-rtdb.europe-west1.firebasedatabase.app");
     private DatabaseReference myRef = database.getReference();
 
+    private Button mGenerar;
 
     private final static int LOCATION_REQUEST_CODE = 1;
     private final static int SETTINGS_REQUEST_CODE = 2;
@@ -130,6 +131,15 @@ public class MapClientActivity extends AppCompatActivity implements OnMapReadyCa
         mMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mMapFragment.getMapAsync(this);
         //Toast.makeText(this, mCurrentLatLng.toString(), Toast.LENGTH_SHORT).show();
+
+        mGenerar = findViewById(R.id.btnGenerar);
+        mGenerar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MapClientActivity.this,GeneradorQrActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void getActiveDrivers() {

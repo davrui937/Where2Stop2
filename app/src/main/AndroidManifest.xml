@@ -8,20 +8,24 @@
 
     <application
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Where2Stop"
-        android:hardwareAccelerated="true">
+        android:theme="@style/Theme.Where2Stop">
+        <activity
+            android:name=".activities.client.GeneradorQrActivity"
+            android:parentActivityName=".activities.client.MapClientActivity"
+            android:exported="true" />
         <activity
             android:name=".activities.driver.LectorQrActivity"
             android:exported="true"
-            android:parentActivityName=".activities.driver.MapGuideActivity"/>
+            android:parentActivityName=".activities.driver.MapGuideActivity" />
         <activity
             android:name=".activities.driver.MapGuideActivity"
             android:exported="true"
-            android:parentActivityName=".activities.driver.DetailRequestActivity"/>
+            android:parentActivityName=".activities.driver.DetailRequestActivity" />
         <activity
             android:name=".activities.driver.DetailRequestActivity"
             android:exported="true"
