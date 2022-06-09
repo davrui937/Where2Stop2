@@ -7,6 +7,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -152,6 +153,9 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
             }
         });
 
+
+
+
         mButtonConfirm = findViewById(R.id.btnConfirm);
         mButtonConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -246,6 +250,7 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

@@ -138,7 +138,7 @@ public class MapGuideActivity extends AppCompatActivity implements OnMapReadyCal
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_guide);
-        MyToolbar.show(this, "Conductor", false);
+        MyToolbar.show(this, "Conductor", true);
 
         mAuthProvider = new AuthProvider();
         mGeofireProvider = new GeofireProvider();
@@ -164,6 +164,8 @@ public class MapGuideActivity extends AppCompatActivity implements OnMapReadyCal
         mButtonEntrega.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(MapGuideActivity.this, LectorQrActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -256,14 +258,6 @@ public class MapGuideActivity extends AppCompatActivity implements OnMapReadyCal
                 mMap.addMarker(new MarkerOptions().position(mClientLatLng).title("Cliente").icon( BitmapDescriptorFactory.fromResource(R.drawable.icon_pin_user)));
             }
         });
-
-  /*      mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
-                new CameraPosition.Builder()
-                        .target(mCurrentLatLng)
-                        .zoom(14f)
-                        .build()
-
-        ));*/
 
 
     }
