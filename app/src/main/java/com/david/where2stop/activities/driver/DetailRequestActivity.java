@@ -52,8 +52,7 @@ public class DetailRequestActivity extends AppCompatActivity implements OnMapRea
     private List<LatLng> mPolylineList;
     private PolylineOptions mPolylineOptions;
 
-    private TextView mTextViewOrigin;
-    private TextView mTextViewDestination;
+
     private TextView mTextViewTime;
     private TextView mTextViewDistance;
 
@@ -71,21 +70,18 @@ public class DetailRequestActivity extends AppCompatActivity implements OnMapRea
         mExtraOriginLng = getIntent().getDoubleExtra("origin_lng",0);
         mExtraDestinationLat = getIntent().getDoubleExtra("destination_lat",0);
         mExtraDestinationLng = getIntent().getDoubleExtra("destination_lng",0);
-        mExtraOrigin = getIntent().getStringExtra("origin");
-        mExtraDestination = getIntent().getStringExtra("destination");
+
 
         mGoogleApiProvider = new GoogleApiProvider(DetailRequestActivity.this);
 
         mOriginLatLng = new LatLng(mExtraOriginLat,mExtraOriginLng);
         mDestinationLatLng = new LatLng(mExtraDestinationLat,mExtraDestinationLng);
 
-        mTextViewOrigin = findViewById(R.id.textViewOrigin);
-        mTextViewDestination = findViewById(R.id.textViewDestination);
+
         mTextViewTime = findViewById(R.id.textViewTime);
         mTextViewDistance = findViewById(R.id.textViewDistancia);
 
-        mTextViewOrigin.setText(mExtraOrigin);
-        mTextViewDestination.setText(mExtraDestination);
+
 
     }
     private void drawRoute(){

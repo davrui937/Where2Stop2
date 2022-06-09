@@ -189,8 +189,6 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
             intent.putExtra("origin_lng", mCurrentLatLng.longitude);
             intent.putExtra("destination_lat", mClientLatLng.latitude);
             intent.putExtra("destination_lng", mClientLatLng.longitude);
-            intent.putExtra("origin", mCurrentLatLng);
-            intent.putExtra("destination", mClientLatLng);
             startActivity(intent);
         }
         else{
