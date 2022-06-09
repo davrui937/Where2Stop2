@@ -14,9 +14,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Where2Stop">
         <activity
-            android:name=".activities.driver.DetailRequestActivity"
-            android:parentActivityName=".activities.driver.MapDriverActivity"
+            android:name=".activities.driver.MapGuideActivity"
             android:exported="true" />
+        <activity
+            android:name=".activities.driver.DetailRequestActivity"
+            android:exported="true"
+            android:parentActivityName=".activities.driver.MapDriverActivity" />
         <activity
             android:name=".activities.driver.MapDriverActivity"
             android:exported="true" />
@@ -44,6 +47,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

@@ -1,4 +1,5 @@
 package com.david.where2stop.activities.driver;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -18,12 +19,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.david.where2stop.providers.GoogleApiProvider;
+import com.david.where2stop.utils.DecodePoints;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -35,6 +39,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.JointType;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -65,7 +70,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapGuideActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private SupportMapFragment mMapFragment;
@@ -81,17 +86,18 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
     private Marker mMarker;
 
     private Button mButtonConnect;
-    private Button mButtonConfirm;
+    private Button mButtonEntrega;
     private boolean mIsConnect = false;
 
     private LatLng mClientLatLng;
 
-
+    private GoogleApiProvider mGoogleApiProvider;
+    private List<LatLng> mPolylineList;
+    private PolylineOptions mPolylineOptions;
 
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance("https://where2stop-625d0-default-rtdb.europe-west1.firebasedatabase.app");
     private DatabaseReference myRef = database.getReference();
-    private DatabaseReference mDatabase;
     private LatLng mCurrentLatLng;
 
     LocationCallback mLocationCallback = new LocationCallback() {
@@ -117,7 +123,7 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
                     mMap.moveCamera(CameraUpdateFactory.newCameraPosition(
                             new CameraPosition.Builder()
                                     .target(new LatLng(location.getLatitude(), location.getLongitude()))
-                                    .zoom(16f)
+                                    .zoom(18f)
                                     .build()
                     ));
 
@@ -131,7 +137,7 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map_driver);
+        setContentView(R.layout.activity_map_guide);
         MyToolbar.show(this, "Conductor", false);
 
         mAuthProvider = new AuthProvider();
@@ -141,6 +147,8 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
 
         mMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mMapFragment.getMapAsync(this);
+
+        mGoogleApiProvider = new GoogleApiProvider(MapGuideActivity.this);
 
 
 
@@ -152,11 +160,10 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
             }
         });
 
-        mButtonConfirm = findViewById(R.id.btnConfirm);
-        mButtonConfirm.setOnClickListener(new View.OnClickListener() {
+        mButtonEntrega = findViewById(R.id.btnEntrega);
+        mButtonEntrega.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                requestGuide();
             }
         });
 
@@ -176,23 +183,55 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
 
     }
 
-    private void requestGuide() {
-        if (mCurrentLatLng != null && mClientLatLng != null){
-            Intent intent = new Intent(MapDriverActivity.this,DetailRequestActivity.class);
-            intent.putExtra("origin_lat", mCurrentLatLng.latitude);
-            intent.putExtra("origin_lng", mCurrentLatLng.longitude);
-            intent.putExtra("destination_lat", mClientLatLng.latitude);
-            intent.putExtra("destination_lng", mClientLatLng.longitude);
-            startActivity(intent);
-        }
-        else{
-            Toast.makeText(this, "Debe seleccionar el Cliente", Toast.LENGTH_SHORT).show();
-        }
+    private void drawRoute(){
+
+        mGoogleApiProvider.getDirection(mCurrentLatLng,mClientLatLng).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                try{
+                    JSONObject jsonObject = new JSONObject(response.body());
+                    JSONArray jsonArray =  jsonObject.getJSONArray("routes");
+                    JSONObject route = jsonArray.getJSONObject(0);
+                    JSONObject polylines = route.getJSONObject("overview_polyline");
+                    String points = polylines.getString("points");
+                    mPolylineList = DecodePoints.decodePoly(points);
+                    mPolylineOptions = new PolylineOptions();
+                    mPolylineOptions.color(Color.DKGRAY);
+                    mPolylineOptions.width(8f);
+                    mPolylineOptions.startCap(new SquareCap());
+                    mPolylineOptions.jointType(JointType.ROUND);
+                    mPolylineOptions.addAll(mPolylineList);
+                    mMap.addPolyline(mPolylineOptions);
+
+
+                }catch (Exception e){
+                    Log.d("Error", "Error encontrado" + e.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
     }
+
+
 
     private void updateLocation() {
         if (mAuthProvider.existSession() && mCurrentLatLng != null) {
             mGeofireProvider.saveLocation(mAuthProvider.getId(), mCurrentLatLng);
+            drawRoute();
+            mMap.clear();
+
+
+            mMarker = mMap.addMarker(new MarkerOptions().position(mCurrentLatLng).title("Tu posicion").icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_caja)));
+            database.getReference().child("client").child("cliente@gmailcom").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                @Override
+                public void onSuccess(DataSnapshot dataSnapshot) {
+                    mMap.addMarker(new MarkerOptions().position(mClientLatLng).title("Cliente").icon( BitmapDescriptorFactory.fromResource(R.drawable.icon_pin_user)));
+                }
+            });
         }
     }
 
@@ -210,15 +249,21 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
         mLocationRequest.setFastestInterval(1000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setSmallestDisplacement(5);
-
-
-
+        mMap.getUiSettings().setCompassEnabled(true);
         database.getReference().child("client").child("cliente@gmailcom").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
                 mMap.addMarker(new MarkerOptions().position(mClientLatLng).title("Cliente").icon( BitmapDescriptorFactory.fromResource(R.drawable.icon_pin_user)));
             }
         });
+
+  /*      mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
+                new CameraPosition.Builder()
+                        .target(mCurrentLatLng)
+                        .zoom(14f)
+                        .build()
+
+        ));*/
 
 
     }
@@ -328,38 +373,17 @@ public class MapDriverActivity extends AppCompatActivity implements OnMapReadyCa
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                ActivityCompat.requestPermissions(MapDriverActivity.this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
+                                ActivityCompat.requestPermissions(MapGuideActivity.this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
                             }
                         })
                         .create()
                         .show();
             }
             else {
-                ActivityCompat.requestPermissions(MapDriverActivity.this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
+                ActivityCompat.requestPermissions(MapGuideActivity.this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
             }
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.driver_menu, menu);
 
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.action_logout) {
-            logout();
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    void logout() {
-        disconnect();
-        mAuthProvider.logout();
-        Intent intent = new Intent(MapDriverActivity.this, MainActivity.class);
-        startActivity(intent);
-        finish();
-    }
 }

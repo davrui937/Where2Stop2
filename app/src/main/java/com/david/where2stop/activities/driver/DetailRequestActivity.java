@@ -2,9 +2,12 @@ package com.david.where2stop.activities.driver;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.david.where2stop.R;
@@ -43,6 +46,8 @@ public class DetailRequestActivity extends AppCompatActivity implements OnMapRea
     private double mExtraDestinationLng;
     private String mExtraOrigin;
     private String mExtraDestination;
+    private Button mButtonRequestNow;
+
 
     private LatLng mOriginLatLng;
     private LatLng mDestinationLatLng;
@@ -80,7 +85,15 @@ public class DetailRequestActivity extends AppCompatActivity implements OnMapRea
 
         mTextViewTime = findViewById(R.id.textViewTime);
         mTextViewDistance = findViewById(R.id.textViewDistancia);
+        mButtonRequestNow = findViewById(R.id.btnRequestNow);
 
+        mButtonRequestNow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DetailRequestActivity.this,MapGuideActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
     }
