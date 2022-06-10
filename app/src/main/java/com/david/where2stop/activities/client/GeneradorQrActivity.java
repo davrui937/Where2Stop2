@@ -56,7 +56,9 @@ public class GeneradorQrActivity extends AppCompatActivity {
                 for(DataSnapshot item_snapshot:snapshot.getChildren()) {
 
                     mapaUsers = (HashMap) Objects.requireNonNull(item_snapshot.getValue());
-
+                    for (Object valor : mapaUsers.values()) {
+                        System.out.println("valor: " + valor);
+                    }
                 }
 
             }
