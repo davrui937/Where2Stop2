@@ -13,20 +13,9 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-<TextView
-    android:layout_marginTop="10dp"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Inserte el identificador del pedido:"
-    android:layout_marginHorizontal="10dp"
-    android:textSize="18sp"
-    android:textStyle="bold"/>
-    <EditText
-            android:id="@+id/textCambios"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-        android:layout_marginVertical="10dp"/>
+
         <Button
+            android:layout_marginTop="20dp"
             android:id="@+id/btnGenerarQr"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

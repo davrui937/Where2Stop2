@@ -31,7 +31,7 @@ public class LectorQrActivity extends AppCompatActivity {
     private Button mButtonScan;
     private Button mButtonComprobar;
     private EditText mTextResult;
-    private  Double code;
+    private String code;
     private FirebaseDatabase database = FirebaseDatabase.getInstance("https://where2stop-625d0-default-rtdb.europe-west1.firebasedatabase.app");
     private DatabaseReference myRef = database.getReference();
 
@@ -49,7 +49,7 @@ public class LectorQrActivity extends AppCompatActivity {
         database.getReference().child("client").child("cliente@gmailcom").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
-                code = Double.parseDouble(Objects.requireNonNull(dataSnapshot.child("lat").getValue()).toString()) + Double.parseDouble(Objects.requireNonNull(dataSnapshot.child("long").getValue()).toString());
+                code = (dataSnapshot.child("code").getValue().toString());
             }
         });
 
@@ -70,8 +70,6 @@ public class LectorQrActivity extends AppCompatActivity {
         mButtonComprobar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println(code+"XXXXXXXXXXXXXXXXXXXXXXXX");
-                System.out.println(mTextResult.toString()+"XXXXXXXXXXXXXXXXXXXXXXXX");
 
                 if(mTextResult.getText().toString().equals(code)){
                     Toast.makeText(LectorQrActivity.this, "Pedido entregado", Toast.LENGTH_SHORT).show();
@@ -93,7 +91,11 @@ public class LectorQrActivity extends AppCompatActivity {
                  Toast.makeText(this, "Lectora cancelada", Toast.LENGTH_SHORT).show();
              }else{
                  Toast.makeText(this, result.getContents(), Toast.LENGTH_SHORT).show();
-                 mTextResult.setText(result.getContents());
+                 if (result.getContents().equals(code)){
+                     mTextResult.setText("Pedido entregado");
+                 }else{
+                     mTextResult.setText("Codigo de pedido erroneo");
+                 }
              }
          } else{
              super.onActivityResult(requestCode,resultCode,data);
