@@ -29,8 +29,7 @@ import java.util.Objects;
 public class LectorQrActivity extends AppCompatActivity {
 
     private Button mButtonScan;
-    private Button mButtonComprobar;
-    private EditText mTextResult;
+    private TextView mTextResult;
     private String code;
     private FirebaseDatabase database = FirebaseDatabase.getInstance("https://where2stop-625d0-default-rtdb.europe-west1.firebasedatabase.app");
     private DatabaseReference myRef = database.getReference();
@@ -42,7 +41,6 @@ public class LectorQrActivity extends AppCompatActivity {
 
         mButtonScan = findViewById(R.id.btnScan);
         mTextResult = findViewById(R.id.txtResult);
-        mButtonComprobar = findViewById(R.id.btnComprobar);
 
         MyToolbar.show(this,"Scan",true);
 
@@ -66,20 +64,6 @@ public class LectorQrActivity extends AppCompatActivity {
 
             }
         });
-
-        mButtonComprobar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if(mTextResult.getText().toString().equals(code)){
-                    Toast.makeText(LectorQrActivity.this, "Pedido entregado", Toast.LENGTH_SHORT).show();
-                } else{
-                    Toast.makeText(LectorQrActivity.this, "Codigo de pedido erroneo", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-
 
     }
 

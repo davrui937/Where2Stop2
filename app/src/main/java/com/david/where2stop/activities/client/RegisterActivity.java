@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.david.where2stop.R;
+import com.david.where2stop.activities.LoginActivity;
 import com.david.where2stop.activities.driver.MapDriverActivity;
 import com.david.where2stop.activities.driver.RegisteredDriverActivity;
 import com.david.where2stop.includes.MyToolbar;
@@ -24,6 +25,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import dmax.dialog.SpotsDialog;
 
@@ -36,6 +39,9 @@ public class RegisterActivity extends AppCompatActivity {
     TextInputEditText mTextInputEmail;
     TextInputEditText mTextInputName;
     TextInputEditText mTextInputPassword;
+
+    FirebaseDatabase database = FirebaseDatabase.getInstance("https://where2stop-625d0-default-rtdb.europe-west1.firebasedatabase.app");
+    DatabaseReference myRef = database.getReference();
 
     Toolbar mToolbar;
 
@@ -76,7 +82,10 @@ public class RegisterActivity extends AppCompatActivity {
         final String email = mTextInputEmail.getText().toString();
         final String password = mTextInputPassword.getText().toString();
 
+        String iduser = email.replace(".","");
+        int numero = (int)(Math.random()*99999+1);
 
+        myRef.child("client").child(LoginActivity.iduser).child(iduser).child("code").setValue(numero);
 
         if (!name.isEmpty() && !email.isEmpty() && !password.isEmpty()) {
             if (password.length() >= 6) {
@@ -126,40 +135,5 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
     }
-
-   /* void saveUser(String id, String name, String email) {
-        String selectedUser = mPref.getString("user", "");
-        User user = new User();
-        user.setEmail(email);
-        user.setName(name);
-
-        if (selectedUser.equals("driver")) {
-            mDatabase.child("Users").child("Drivers").child(id).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(RegisterActivity.this, "Registro exitoso", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        Toast.makeText(RegisterActivity.this, "Fallo el registro", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-        }
-        else if (selectedUser.equals("client")){
-            mDatabase.child("Users").child("Clients").child(id).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(RegisterActivity.this, "Registro exitoso", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        Toast.makeText(RegisterActivity.this, "Fallo el registro", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-        }
-    }*/
-
 
 }

@@ -33,19 +33,13 @@
                 android:background="@drawable/rounded_button"
                 android:backgroundTint="@color/colorPrimary"
                 android:textColor="@color/white" />
-        <EditText
+        <TextView
             android:id="@+id/txtResult"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:hint="Inserta numero de pedido"/>
+            android:hint="Numero de pedido"/>
 
-        <Button
-            android:id="@+id/btnComprobar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rounded_button"
-            android:text="Comprobar"/>
         </LinearLayout>
 
 
